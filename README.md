@@ -43,6 +43,30 @@ Link To the Online Version<br>
 https://stud.hosted.hr.nl/0931871/AllYouCanEat/
 
 ---
+### What does the game consist of?
+This game consists of some of the factors of "The 8 Core Principles" of gameing.
 ```
-"First we eat and then we do everything else"
+     Loss & Avoidance:          The player loses points when he/she grabs a hold of the pepper.
+     
+     Scarcity & Impatience:     The game consists of only one melon.
+     
+     Unpredictability:          The player has no idea where the next block in the game will appear.
+     
+     Empowerment of Creativity: The aim of the game is to design your own path of blocks. 
+                                While also making the deleberate choice of grabbing good or bad food
+                                so you can continue on to the next level.
+     
+```
+  
+The game also consist of the "Game Components": Points, leveling up and progression. <br>
+In terms of "Meaningfull Play" you can "level up" and get Audio & Visual feedback while playing the game.<br>
+Out of the "8 kinds of fun" this game is the submission type. <br>
+
+**This game complies to the term "Gameplay" since it consists of:**
+* A goal
+* Rules
+* And choices. 
+---
+```
+                                "First we eat and then we do everything else"
 ```
