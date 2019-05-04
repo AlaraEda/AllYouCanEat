@@ -39,7 +39,7 @@ Or will you chance the big jump all the way to the Melon? Knowing you will put y
 *But beware of the dangerous waters and ofcourse the time...*
 
 <br>
-Link To the Online Version
+Link To the Online Version<br>
 https://stud.hosted.hr.nl/0931871/AllYouCanEat/
 
 ---
