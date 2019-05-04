@@ -34,7 +34,7 @@ Will you grab the Pepper? <br>
 Fully knowing you will lose points, but also knowing that you might be able to make up for it later?<br>
 Or will you chance the big jump all the way to the Melon? Knowing you will put yourself in a bad-position if you make it.<br>
 ```
-                         The choice is up to you.
+                                               The choice is up to you.
 ```
 *But beware of the dangerous waters and ofcourse the time...*
 
