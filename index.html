@@ -15,22 +15,355 @@
         //  Although it will work fine with this tutorial, it's almost certainly not the most current version.
         //  Be sure to replace it with an updated version before you start experimenting with adding your own code.
 
-        var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create });
+        var game = new Phaser.Game(800, 600, Phaser.AUTO, '', { preload: preload, create: create, update: update });
 
         function preload () {
 
-            game.load.image('logo', 'phaser.png');
+            game.stage.backgroundColor = '#85b5e1';
 
+            game.load.baseURL = 'http://examples.phaser.io/assets/';
+            game.load.crossOrigin = 'anonymous';
+            
+            game.load.image('player', 'sprites/phaser-dude.png');
+            game.load.spritesheet('platform', 'sprites/platform.png',50,50);
+            game.load.image('water', 'sprites/waters.png');
+            
+            game.load.spritesheet('block', 'sprites/block.png',50,50);
+            
+            game.load.spritesheet('ground', 'sprites/platform.png',400,50);
+            
+            //Food
+            game.load.image('pineapple','sprites/pineapple.png');
+            game.load.image('pepper','sprites/pepper.png');
+            game.load.image('mushroom','sprites/mushroom.png');
+            game.load.image('melon','sprites/melon.png');
+            game.load.image('diamond','sprites/diamond.png');
+            
+            //Audio
+            game.load.audio('wizball', ['audio/oedipus_wizball_highscore.mp3', 'assets/audio/oedipus_wizball_highscore.ogg']);
+
+            //http://examples.phaser.io/assets/sprites/gem.png
         }
+
+
+        var player;
+        var cursors;
+        var jumpButton;
+        var water;
+
+        var platforms;
+
+        var food;
+
+        var block;
+        var ride = true;
+
+        var score = 0;
+        var scoreText;
+
+        var counter = 100;
+        var text = 0;
+
+        //music
+        var music;
 
         function create () {
+            player = game.add.sprite(45, 200, 'player');
+            game.physics.arcade.enable(player);
+            player.body.collideWorldBounds = true;                                  //Niet/wel door muur heen
 
-            var logo = game.add.sprite(game.world.centerX, game.world.centerY, 'logo');
-            logo.anchor.setTo(0.5, 0.5);
+            //Music
+            game.input.touch.preventDefault = false;
+            music = game.add.audio('wizball');
+            music.play();
 
+            //Background
+            game.input.onDown.add(changeColor, this);
+
+            //Time
+            text = game.add.text(400, 36, 'Timer: 100', { font: "32px Arial", fill: "#ffffff"});
+            text.anchor.setTo(0.5, 0.5);
+            game.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
+            
+            //Verschijn op scherm
+            food = game.add.physicsGroup();
+            platforms = game.add.physicsGroup();
+            
+            ground = game.add.physicsGroup();
+            block = game.add.physicsGroup(); 
+            water = game.add.physicsGroup();
+
+            //Start Platform
+            staan6 = platforms.create(45, 250, 'platform'); 
+            
+            //Food
+            food = game.add.group();
+            food.enableBody = true;
+            createEverything();
+            
+            //Grond raken, achter-water
+            ground.create(0, 550, 'ground');
+            ground.create(400, 550, 'ground');
+            
+            water.create(0, 490, 'water');
+            block.create(80, 470, 'block');
+
+            //Blijf hangen
+            water.setAll('body.immovable', true);
+            block.setAll('body.immovable', true);
+            
+            cursors = game.input.keyboard.createCursorKeys();
+            jumpButton = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+            
+            //Score
+            scoreText = game.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
         }
 
-    };
+        function changeColor() {
+            var c = Phaser.Color.getRandomColor(50, 255, 255);
+            game.stage.backgroundColor = c;
+            game.fd.record(4);
+            
+            music.restart();
+        }
+
+        function updateCounter() {
+            //counter--;
+            text.setText('Timer: ' + counter);
+            
+            if (counter === 0){
+                counter = 0;
+                player.kill();
+                
+                text1 = game.add.text(game.world.centerX, game.world.centerY, 'GAME OVER', { font: "64px Arial", fill: "#ffffff", align: "center" });
+                text1.anchor.setTo(0.5, 0.5);
+            }
+            else{
+                counter--;
+            }
+        }
+
+        function createEverything(){
+            //  Here we'll create 12 of them evenly spaced apart
+            for (var i = 0; i < 1; i++){
+                // X-As nummers voor food & platform
+                var een=(Math.floor((Math.random() * 750)+1));
+                var twee=(Math.floor((Math.random() * 750)+1));
+                var drie=(Math.floor((Math.random() * 750)+1));
+                var vier=(Math.floor((Math.random() * 750)+1));
+                
+                var vijf=(Math.floor((Math.random() * 750)+1));                                 //Extra Pepper      
+                
+                //  Create HealthyFood inside of the 'food' group
+                healthyFood = food.create(een, 0, 'pineapple');
+                healthyFood1 = food.create(twee,0, 'pepper');
+                healthyFood2 = food.create(drie,0, 'mushroom');
+                healthyFood3 = food.create(vier,0, 'melon');
+                
+                healthyFood5 = food.create(vijf,0, 'pepper');                                   //Extra Pepper
+                
+                // Altijd 1 fruit op een platform
+                staan = platforms.create(een, (Math.floor((Math.random()*400)+80)), 'platform');                             
+                staan1 =platforms.create(twee, (Math.floor((Math.random()*400)+80)), 'platform');
+                staan2 = platforms.create(drie, (Math.floor((Math.random()*400)+80)), 'platform');
+                staan3 =platforms.create(vier, (Math.floor((Math.random()*400)+80)), 'platform');
+                
+                staan5 = platforms.create(vijf, (Math.floor((Math.random()*400)+80)), 'platform');       //Extra pepper
+            
+                //  Let gravity do its thing
+                healthyFood.body.gravity.y = 300;
+                healthyFood1.body.gravity.y = 300;
+                healthyFood2.body.gravity.y = 300;
+                healthyFood3.body.gravity.y = 300;
+
+                healthyFood5.body.gravity.y = 300;                                              //Extra Pepper
+                
+                //  This just gives each food a slightly random bounce value
+                healthyFood.body.bounce.y = 0.7 + Math.random() * 0.2;
+                healthyFood1.body.bounce.y = 0.7 + Math.random() * 0.2;
+                healthyFood2.body.bounce.y = 0.7 + Math.random() * 0.2;
+                healthyFood3.body.bounce.y = 0.7 + Math.random() * 0.2;
+                
+                healthyFood5.body.bounce.y = 0.7 + Math.random() * 0.2;                         //Extra pepper
+            }
+                platforms.setAll('body.immovable', true);
+        }
+
+        function update(){
+            //Collision Player
+            game.physics.arcade.collide(player, platforms);
+            game.physics.arcade.collide(player, block);
+            game.physics.arcade.overlap(player, ground, doodsVal, null, this);
+            
+            //Overlap food
+            game.physics.arcade.overlap(player, food, collectFood, null, this);
+            game.physics.arcade.collide(food, platforms);
+            game.physics.arcade.collide(food, block);
+                
+            Player();
+            Block();
+        }
+
+        function Block(){
+            //Rechts-Links schuiven
+            if (ride === true){
+                block.x = block.x + 0.5;
+                if(block.x === 680){    //271
+                    ride = false;
+                }
+            }else{
+                block.x = block.x - 0.5;
+                if (block.x === 0){
+                    ride = true;
+                }
+            }
+        }
+
+        function Player(){
+            //positie
+            player.body.velocity.x = 0;
+            player.body.gravity.y  = 500;                                           
+            
+            //Left
+            if (cursors.left.isDown){
+                player.body.velocity.x = -250;
+            }
+            //Right
+            else if (cursors.right.isDown){
+                player.body.velocity.x = 250;
+            }
+            
+            //Jump
+            if (jumpButton.isDown && (player.body.onFloor() || player.body.touching.down)){
+                player.body.velocity.y = -400; //Valsnelheid
+            }
+            
+            //Uit-Scherm
+        }
+
+
+        function collectFood (player, food) {
+            //console.log("raak");
+            if (game.physics.arcade.collide(player, healthyFood)){ //pineapple
+                console.log("pineapple");
+                
+                healthyFood.kill();
+                healthyFood1.kill();
+                healthyFood5.kill();
+                healthyFood2.kill();
+                healthyFood3.kill();
+                
+                //staan.kill();
+                staan1.kill();
+                staan2.kill();
+                staan3.kill();
+                staan5.kill();
+                staan6.kill();
+                
+                score +=10;
+                
+                scoreText.addColor("#0d7c09", 0); //green
+
+                createEverything();
+            }
+    
+            if(game.physics.arcade.collide(player, healthyFood1)){ //pepper
+                console.log("pepper");
+                
+                healthyFood.kill();
+                healthyFood1.kill();
+                healthyFood5.kill();
+                healthyFood2.kill();
+                healthyFood3.kill();
+                
+                staan.kill();
+                //staan1.kill();
+                staan2.kill();
+                staan3.kill();
+                staan5.kill();
+                staan6.kill();
+                
+                score -=30;
+                
+                createEverything();
+                scoreText.addColor("#ff0000", 0); //red
+            }
+            
+            if(game.physics.arcade.collide(player, healthyFood5)){ //pepper
+                console.log("pepper");
+                
+                healthyFood.kill();
+                healthyFood1.kill();
+                healthyFood5.kill();
+                healthyFood2.kill();
+                healthyFood3.kill();
+                
+                staan.kill();
+                staan1.kill();
+                staan2.kill();
+                staan3.kill();
+                //staan5.kill();
+                staan6.kill();
+                
+                score -=30;
+                
+                createEverything();
+                scoreText.addColor("#ff0000", 0); //red
+            }
+            
+            if(game.physics.arcade.collide(player, healthyFood2)){ //mushroom
+                console.log("mushroom");
+                
+                healthyFood.kill();
+                healthyFood1.kill();
+                healthyFood5.kill();
+                healthyFood2.kill();
+                healthyFood3.kill();
+                
+                staan.kill();
+                staan1.kill();
+                //staan2.kill();
+                staan3.kill();
+                staan5.kill();
+                staan6.kill();
+                
+                score +=10;
+                
+                createEverything();
+                scoreText.addColor("#0d7c09", 0); //green
+            }
+            
+            if(game.physics.arcade.collide(player, healthyFood3)){//melon
+                console.log("melon");
+                
+                healthyFood.kill();
+                healthyFood1.kill();
+                healthyFood5.kill();
+                healthyFood2.kill();
+                healthyFood3.kill();
+                
+                staan.kill();
+                staan1.kill();
+                staan2.kill();
+                //staan3.kill();
+                staan5.kill();
+                staan6.kill();
+                
+                score +=50;
+                
+                createEverything();
+                scoreText.addColor('#0d7c09', 0); //green
+            }
+            
+            //score += 10;
+            scoreText.text = 'Score: ' + score;
+        }
+
+        function doodsVal(player,water){
+            player.kill();
+            counter = 0;
+            }
+        };
 
     </script>
 
