@@ -21,7 +21,8 @@
 
             game.stage.backgroundColor = '#85b5e1';
 
-            game.load.baseURL = 'http://examples.phaser.io/assets/';
+            //game.load.baseURL = 'http://examples.phaser.io/assets/'; OLD
+            game.load.baseURL = 'https://cdn.jsdelivr.net/gh/samme/phaser-examples-assets@v2.0.0/assets/';
             game.load.crossOrigin = 'anonymous';
             
             game.load.image('player', 'sprites/phaser-dude.png');
@@ -39,10 +40,12 @@
             game.load.image('melon','sprites/melon.png');
             game.load.image('diamond','sprites/diamond.png');
             
-            //Audio
-            game.load.audio('wizball', ['audio/oedipus_wizball_highscore.mp3', 'assets/audio/oedipus_wizball_highscore.ogg']);
+            //Audio OLD
+            //game.load.audio('wizball', ['audio/oedipus_wizball_highscore.mp3', 'assets/audio/oedipus_wizball_highscore.ogg']);
 
-            //http://examples.phaser.io/assets/sprites/gem.png
+            game.load.audio('wizball', ['https://raw.githubusercontent.com/phaserjs/examples/master/public/assets/audio/oedipus_wizball_highscore.mp3']);
+
+
         }
 
 
@@ -122,7 +125,7 @@
         function changeColor() {
             var c = Phaser.Color.getRandomColor(50, 255, 255);
             game.stage.backgroundColor = c;
-            game.fd.record(4);
+            //game.fd.record(4);
             
             music.restart();
         }
