@@ -3,7 +3,8 @@
     <head>
         <meta charset="UTF-8" />
         <title>hello phaser!</title>
-        <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script>
+        <!-- <script src="//cdn.jsdelivr.net/phaser/2.5.0/phaser.min.js"></script> OLD-->
+        <script src="js/phaser.min.js"></script>
     </head>
     <body>
 
@@ -21,8 +22,12 @@
 
             game.stage.backgroundColor = '#85b5e1';
 
-            game.load.baseURL = 'http://examples.phaser.io/assets/';
-            game.load.crossOrigin = 'anonymous';
+            //game.load.baseURL = 'http://examples.phaser.io/assets/'; OLD
+            //game.load.baseURL = 'https://cdn.jsdelivr.net/gh/samme/phaser-examples-assets@v2.0.0/assets/'; make game selff-sufficient
+            game.load.baseURL = 'assets/';
+
+            //OLD
+            // game.load.crossOrigin = 'anonymous';
             
             game.load.image('player', 'sprites/phaser-dude.png');
             game.load.spritesheet('platform', 'sprites/platform.png',50,50);
@@ -39,10 +44,12 @@
             game.load.image('melon','sprites/melon.png');
             game.load.image('diamond','sprites/diamond.png');
             
-            //Audio
-            game.load.audio('wizball', ['audio/oedipus_wizball_highscore.mp3', 'assets/audio/oedipus_wizball_highscore.ogg']);
+            //Audio OLD
+            //game.load.audio('wizball', ['audio/oedipus_wizball_highscore.mp3', 'assets/audio/oedipus_wizball_highscore.ogg']);
+            //game.load.audio('wizball', ['https://raw.githubusercontent.com/phaserjs/examples/master/public/assets/audio/oedipus_wizball_highscore.mp3']);
+            
+            game.load.audio('wizball', 'audio/oedipus_wizball_highscore.mp3');
 
-            //http://examples.phaser.io/assets/sprites/gem.png
         }
 
 
@@ -122,7 +129,7 @@
         function changeColor() {
             var c = Phaser.Color.getRandomColor(50, 255, 255);
             game.stage.backgroundColor = c;
-            game.fd.record(4);
+            //game.fd.record(4);
             
             music.restart();
         }
